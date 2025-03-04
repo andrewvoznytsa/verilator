@@ -44,7 +44,6 @@
 #include "V3DfgOptimizer.h"
 #include "V3EmitC.h"
 #include "V3EmitCMain.h"
-#include "V3EmitCMake.h"
 #include "V3EmitMk.h"
 #include "V3EmitMkJson.h"
 #include "V3EmitV.h"
@@ -626,7 +625,7 @@ static void process() {
     if (!v3Global.opt.lintOnly() && !v3Global.opt.serializeOnly() && !v3Global.opt.dpiHdrOnly()) {
         if (v3Global.opt.main()) V3EmitCMain::emit();
 
-        // V3EmitMk/V3EmitCMake/V3EmitMkJson must be after all other emitters,
+        // V3EmitMk/V3EmitMkJson must be after all other emitters,
         // as they and below code visits AstCFiles added earlier
         size_t src_f_cnt = 0;
         for (AstNode* nodep = v3Global.rootp()->filesp(); nodep; nodep = nodep->nextp()) {
@@ -634,7 +633,6 @@ static void process() {
                 src_f_cnt += cfilep->source() ? 1 : 0;
         }
         if (src_f_cnt >= V3EmitMk::PARALLEL_FILE_CNT_THRESHOLD) v3Global.useParallelBuild(true);
-        if (v3Global.opt.cmake()) V3EmitCMake::emit();
         if (v3Global.opt.makeJson()) V3EmitMkJson::emit();
         if (v3Global.opt.gmake()) V3EmitMk::emitmk();
     }
@@ -732,10 +730,6 @@ static void verilate(const string& argString) {
             v3Global.hierPlanp()->writeCommandArgsFiles(false);
             V3EmitMk::emitHierVerilation(v3Global.hierPlanp());
         }
-        if (v3Global.opt.cmake()) {
-            v3Global.hierPlanp()->writeCommandArgsFiles(true);
-            V3EmitCMake::emit();
-        }
         if (v3Global.opt.makeJson()) {
             v3Global.hierPlanp()->writeCommandArgsFiles(true);
             V3EmitMkJson::emit();
@@ -787,7 +781,6 @@ static string buildMakeCmd(const string& makefile, const string& target) {
 static void execBuildJob() {
     UASSERT(v3Global.opt.build(), "--build is not specified.");
     UASSERT(v3Global.opt.gmake(), "--build requires GNU Make.");
-    UASSERT(!v3Global.opt.cmake(), "--build cannot use CMake.");
     VlOs::DeltaWallTime buildWallTime{true};
     UINFO(1, "Start Build\n");
 

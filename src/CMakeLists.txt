@@ -83,7 +83,6 @@ set(HEADERS
     V3EmitCConstInit.h
     V3EmitCFunc.h
     V3EmitCMain.h
-    V3EmitCMake.h
     V3EmitMk.h
     V3EmitMkJson.h
     V3EmitV.h
@@ -242,7 +241,6 @@ set(COMMON_SOURCES
     V3EmitCImp.cpp
     V3EmitCInlines.cpp
     V3EmitCMain.cpp
-    V3EmitCMake.cpp
     V3EmitCModel.cpp
     V3EmitCPch.cpp
     V3EmitCSyms.cpp
